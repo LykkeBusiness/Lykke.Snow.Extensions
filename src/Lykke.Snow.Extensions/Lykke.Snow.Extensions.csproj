@@ -2,7 +2,15 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-    </PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <Version>1.0.0</Version>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <Description>
+          This package contains extension methods to be used on Lykke Snow project.
+        </Description>
+        <PackageTags>dotnet-core;csharp;</PackageTags>
+        <PackageId>Lykke.Snow.Extensions</PackageId>
+      </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.18" />
