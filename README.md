@@ -1,2 +1,2 @@
 # Lykke.Snow.Extensions
-The extensions methods for Lykke Snow project
+The extension methods for Lykke Snow project
