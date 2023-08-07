@@ -1,4 +1,4 @@
-## [[tbd]] - Nova 2. Delivery 17. Hotfix 3 (2023-08-07)
+## 1.0.9 - Nova 2. Delivery 17. Hotfix 3 (2023-08-07)
 
 ### Changed
 * Improved release notes extraction
