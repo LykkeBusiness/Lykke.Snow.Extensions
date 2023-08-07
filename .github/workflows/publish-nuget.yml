@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest # NuGet commands are often easier on Windows
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
