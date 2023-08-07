@@ -1,4 +1,4 @@
-## [[tbd]] - Nova 2. Delivery 17. Hotfix 2 (2023-08-07)
+## 1.0.8 - Nova 2. Delivery 17. Hotfix 2 (2023-08-07)
 
 ### Changed
 * Passing release notes as temporary file in github action

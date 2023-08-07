@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>latest</LangVersion>
-        <Version>1.0.7</Version>
+        <Version>1.0.8</Version>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Description>
           This package contains extension methods to be used on Lykke Snow project.
