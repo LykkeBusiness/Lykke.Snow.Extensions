@@ -18,13 +18,13 @@ jobs:
       - name: Verify tag is on master branch
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
-          TAG_BRANCH=$(git branch --contains $TAG_NAME)
-          echo $TAG_BRANCH
-          if [[ ! $TAG_BRANCH =~ .*master.* ]]; then
+          TAG_COMMIT=$(git rev-list -n 1 $TAG_NAME)
+          MASTER_COMMIT=$(git rev-list -n 1 master)
+          if [ $TAG_COMMIT != $MASTER_COMMIT ]; then
             echo "Tag $TAG_NAME is not on master branch. Exiting."
             exit 1
           fi
-        
+      
       # todo: extract delivery name and publish release in github
 
       - name: Check for CHANGELOG.md and replace [[TBD]] or [[tbd]]
