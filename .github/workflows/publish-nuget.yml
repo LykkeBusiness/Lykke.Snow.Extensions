@@ -80,7 +80,7 @@ jobs:
         run: dotnet pack --no-build --configuration Release -o out
 
       - name: Push
-        run: dotnet nuget push out/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push out/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate
         
       - name: Extract delivery name and release notes
         id: extract_notes
