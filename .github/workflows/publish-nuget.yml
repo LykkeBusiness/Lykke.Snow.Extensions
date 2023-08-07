@@ -88,7 +88,7 @@ jobs:
           CHANGELOG_FILE=$(find . -type f -name 'CHANGELOG.md')
 
           DELIVERY_NAME=$(sed -n 's/^## [0-9.]* - \(.*\) ([0-9-]*)$/\1/p' "$CHANGELOG_FILE" | head -n 1)
-          DELIVERY_NOTES=$(awk '/^## / { if (found) exit; found=1; print; next } found { print }' $CHANGELOG_FILE)
+          DELIVERY_NOTES=$(awk '/^## / { if (found) exit; if (!found) found=1; next } found && NF > 0 { print }' $CHANGELOG_FILE)
 
           echo "DELIVERY_NAME=$DELIVERY_NAME" >> $GITHUB_ENV
           echo "$DELIVERY_NOTES" > delivery_notes.txt
