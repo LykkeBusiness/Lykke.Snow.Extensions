@@ -1,4 +1,4 @@
-## [[tbd]] - Nova 2. Delivery 17. Hotfix 1 (2023-08-07)
+## 1.0.7 - Nova 2. Delivery 17. Hotfix 1 (2023-08-07)
 
 ### Changed
 * Using CHANGELOG.md as a source of truth for release notes
