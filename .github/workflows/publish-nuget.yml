@@ -18,8 +18,11 @@ jobs:
       - name: Check for CHANGELOG.md and replace [[TBD]] or [[tbd]]
         run: |
           TAG_VERSION=${GITHUB_REF/refs\/tags\/v/} # Removing "v" prefix
-          printf "Checking for CHANGELOG.md and replacing [[TBD]] or [[tbd]] with $TAG_VERSION\n"
           FILES=$(find . -type f -name 'CHANGELOG.md')
+          if [[ -z "$FILES" ]]; then
+            echo "CHANGELOG.md not found. Failing the workflow."
+            exit 1
+          fi
           COUNT=$(echo "$FILES" | wc -l)
           if [[ $COUNT -ne 1 ]]; then
             echo "Found $COUNT instances of CHANGELOG.md. There must be exactly one. Failing the workflow."
@@ -27,13 +30,13 @@ jobs:
           fi
           FILE=$(echo "$FILES" | head -n 1)
           if ! grep -q -E '\[\[TBD\]\]|\[\[tbd\]\]' "$FILE"; then
-            echo "[[TBD]] or [[tbd]] not found in CHANGELOG.md. Failing the workflow."
+            echo "[[TBD]] or [[tbd]] not found in $FILE. Failing the workflow."
             exit 1
           else
             sed -i "s/\[\[TBD\]\]/$TAG_VERSION/g" "$FILE"
             sed -i "s/\[\[tbd\]\]/$TAG_VERSION/g" "$FILE"
           fi
-
+      
       - name: Update csproj files with new version
         run: |
           TAG_VERSION=${GITHUB_REF/refs\/tags\/v/} # Removing "v" prefix
