@@ -83,7 +83,6 @@ jobs:
         run: dotnet nuget push out/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate
         
       - name: Extract delivery name and release notes
-        id: extract_notes
         run: |
           TAG_VERSION=${GITHUB_REF/refs\/tags\/v/} # Removing "v" prefix
           CHANGELOG_FILE=$(find . -type f -name 'CHANGELOG.md')
@@ -93,13 +92,18 @@ jobs:
           DELIVERY_NOTES=$(awk '/^## / { if (found) exit; found=1; print; next } found { print }' $CHANGELOG_FILE)
           echo "Delivery notes: $DELIVERY_NOTES"
 
-          echo "::set-output name=delivery_name::$DELIVERY_NAME"
-          echo "::set-output name=delivery_notes::$DELIVERY_NOTES"
+          echo "DELIVERY_NAME_ENV_VAR<<EOF" >> $GITHUB_ENV
+          echo $DELIVERY_NAME >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          
+          echo "DELIVERY_NOTES_ENV_VAR<<EOF" >> $GITHUB_ENV
+          echo $DELIVERY_NOTES >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ steps.extract_notes.outputs.delivery_name }}
-          body: ${{ steps.extract_notes.outputs.delivery_notes }}
+          release_name: ${{ env.DELIVERY_NAME_ENV_VAR }}
+          body: ${{ env.DELIVERY_NOTES_ENV_VAR }}
           
