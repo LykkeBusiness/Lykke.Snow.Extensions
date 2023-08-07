@@ -19,6 +19,7 @@ jobs:
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
           BRANCH=$(git branch --contains $TAG_NAME)
+          print($BRANCH)
           if [[ ! $BRANCH =~ .*master.* ]]; then
             echo "Tag $TAG_NAME is not on master branch. Exiting."
             exit 1
