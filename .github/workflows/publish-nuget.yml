@@ -102,8 +102,12 @@ jobs:
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ env.DELIVERY_NAME_ENV_VAR }}
           body: ${{ env.DELIVERY_NOTES_ENV_VAR }}
+          draft: false
+          prerelease: false
           
