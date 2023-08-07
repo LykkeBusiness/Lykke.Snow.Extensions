@@ -3,7 +3,7 @@ name: Publish NuGet Package
 on:
   push:
     tags:
-      - 'v*' # Trigger the action only when a new tag starting with 'v' is pushed
+      - 'v*'
 
 jobs:
   build:
@@ -12,6 +12,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+            fetch-depth: 0 # Fetch all history for all tags and branches
+            
+      - name: Verify tag is on master branch
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          BRANCH=$(git branch --contains $TAG_NAME)
+          if [[ ! $BRANCH =~ .*master.* ]]; then
+            echo "Tag $TAG_NAME is not on master branch. Exiting."
+            exit 1
+          fi
         
       # todo: extract delivery name and publish release in github
 
