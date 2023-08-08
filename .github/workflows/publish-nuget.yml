@@ -30,23 +30,22 @@ jobs:
 
       - name: Check for CHANGELOG.md and update placeholders
         run: |
-          source ./lykke.snow.deployment/tools/core/changelog.sh
-
           FILES=$(find . -type f -name 'CHANGELOG.md')
           if [[ -z "$FILES" ]]; then
             echo "CHANGELOG.md not found. Failing the workflow."
             exit 1
           fi
+
           COUNT=$(echo "$FILES" | wc -l)
           if [[ $COUNT -ne 1 ]]; then
             echo "Found $COUNT instances of CHANGELOG.md. There must be exactly one. Failing the workflow."
             exit 1
           fi
+          
+          source ./lykke.snow.deployment/tools/core/changelog.sh
           FILE=$(echo "$FILES" | head -n 1)
-
           replace_tbd_placeholder "$FILE" "${{ env.TAG_NUMBERS }}"
-          TBD_FOUND_FLAG=$?
-          if [[ $TBD_FOUND_FLAG -eq 0 ]]; then
+          if [[ $? -eq 0 ]]; then
             echo "CHANGELOG.md does not contain a placeholder for the new version. Failing the workflow."
             exit 1
           fi
