@@ -1,3 +1,8 @@
+## [[tbd]] - Nova 2. Delivery 17. Hotfix 7 (2023-08-08)
+
+### Changed
+* Move git clone after checkout
+
 ## 1.0.12 - Nova 2. Delivery 17. Hotfix 6 (2023-08-08)
 
 ### Changed
