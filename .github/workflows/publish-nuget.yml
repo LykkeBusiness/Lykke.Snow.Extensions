@@ -1,9 +1,12 @@
 name: Publish NuGet Package
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
 
 jobs:
   build:
@@ -14,23 +17,19 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: master
-          
-      - name: Checkout deployment code
+
+      - name: Checkout deployment tools
         run: |
           git clone -v https://${{ secrets.BITBUCKET_USER }}:${{ secrets.BITBUCKET_PASSWORD }}@bitbucket.org/lykke-snow/lykke.snow.deployment.git lykke.snow.deployment
-          echo "Current working directory:"
-          pwd
-          ls -la
 
-      - name: Print Directory Structure
+      - name: Parse tag name
         run: |
-          echo "Current working directory:"
-          pwd
-          ls -la
-      
+          TAG_VERSION=${{ github.event.inputs.version }}
+          TAG_NUMBERS=${TAG_VERSION#v} # Remove preceding "v" if present
+          echo "TAG_NUMBERS=$TAG_NUMBERS" >> $GITHUB_ENV
+
       - name: Check for CHANGELOG.md and replace [[TBD]] or [[tbd]]
         run: |
-          TAG_VERSION=${GITHUB_REF/refs\/tags\/v/} # Removing "v" prefix
           FILES=$(find . -type f -name 'CHANGELOG.md')
           if [[ -z "$FILES" ]]; then
             echo "CHANGELOG.md not found. Failing the workflow."
@@ -46,32 +45,29 @@ jobs:
             echo "[[TBD]] or [[tbd]] not found in $FILE. Failing the workflow."
             exit 1
           else
-            sed -i "s/\[\[TBD\]\]/$TAG_VERSION/g" "$FILE"
-            sed -i "s/\[\[tbd\]\]/$TAG_VERSION/g" "$FILE"
+            sed -i "s/\[\[TBD\]\]/${{ env.TAG_NUMBERS }}/g" "$FILE"
+            sed -i "s/\[\[tbd\]\]/${{ env.TAG_NUMBERS }}/g" "$FILE"
           fi
       
       - name: Update csproj files with new version
         run: |
-          TAG_VERSION=${GITHUB_REF/refs\/tags\/v/} # Removing "v" prefix
           FILES=$(find . -type f -name '*.csproj')
           if [[ -z "$FILES" ]]; then
             echo "No .csproj files found. Failing the workflow."
             exit 1
           fi
           for FILE in $FILES; do
-            echo "Updating version in $FILE to $TAG_VERSION"
-            sed -i "s/<Version>.*<\/Version>/<Version>$TAG_VERSION<\/Version>/g" "$FILE"
+            echo "Updating version in $FILE to ${{ env.TAG_NUMBERS }}"
+            sed -i "s/<Version>.*<\/Version>/<Version>${{ env.TAG_NUMBERS }}<\/Version>/g" "$FILE"
           done
           
       - name: Commit and retag
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/} # Removing "refs/tags/" prefix
-          TAG_VERSION=${TAG_NAME#v} # Removing "v" prefix
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git add -A
-          git commit -m "Version $TAG_VERSION"
-          git tag -fa $TAG_NAME -m "$TAG_NAME"
+          git commit -m "Version ${{ env.TAG_NUMBERS }}"
+          git tag -fa ${{ github.event.inputs.version }} -m "${{ github.event.inputs.version }}"
           git push origin --tags --force
           git push origin master
       
@@ -97,7 +93,6 @@ jobs:
         
       - name: Extract delivery name and release notes
         run: |
-          TAG_VERSION=${GITHUB_REF/refs\/tags\/v/} # Removing "v" prefix
           CHANGELOG_FILE=$(find . -type f -name 'CHANGELOG.md')
 
           DELIVERY_NAME=$(sed -n 's/^## [0-9.]* - \(.*\) ([0-9-]*)$/\1/p' "$CHANGELOG_FILE" | head -n 1)
