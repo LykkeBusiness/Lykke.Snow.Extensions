@@ -1,4 +1,4 @@
-## [[tbd]] - Nova 2. Delivery 17. Hotfix 6 (2023-08-08)
+## 1.0.12 - Nova 2. Delivery 17. Hotfix 6 (2023-08-08)
 
 ### Changed
 * Add more logging to git clone
