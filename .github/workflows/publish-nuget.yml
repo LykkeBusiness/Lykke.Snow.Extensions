@@ -22,13 +22,13 @@ jobs:
         run: |
           git clone -v https://${{ secrets.BITBUCKET_USER }}:${{ secrets.BITBUCKET_PASSWORD }}@bitbucket.org/lykke-snow/lykke.snow.deployment.git lykke.snow.deployment
 
-      - name: Parse tag name
+      - name: Parse version number
         run: |
           TAG_VERSION=${{ github.event.inputs.version }}
           TAG_NUMBERS=${TAG_VERSION#v} # Remove preceding "v" if present
           echo "TAG_NUMBERS=$TAG_NUMBERS" >> $GITHUB_ENV
 
-      - name: Check for CHANGELOG.md and update placeholders
+      - name: Inject new version into changelog file
         run: |
           FILES=$(find . -type f -name 'CHANGELOG.md')
           if [[ -z "$FILES" ]]; then
@@ -50,7 +50,7 @@ jobs:
             exit 1
           fi
       
-      - name: Update csproj files with new version
+      - name: Update .csproj files with new version
         run: |
           FILES=$(find . -type f -name '*.csproj')
           if [[ -z "$FILES" ]]; then
@@ -67,7 +67,7 @@ jobs:
             fi
           done
           
-      - name: Commit and retag
+      - name: Tag version
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
