@@ -1,3 +1,8 @@
+## [[tbd]] - Nova 2. Delivery 17. Hotfix 5 (2023-08-08)
+
+### Changed
+* Logging git clone when checking out deployment repository
+
 ## 1.0.10 - Nova 2. Delivery 17. Hotfix 4 (2023-08-08)
 
 ### Added

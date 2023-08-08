@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout deployment code
-        run: git clone https://${{ secrets.BITBUCKET_USER }}:${{ secrets.BITBUCKET_PASSWORD }}@bitbucket.org/lykke-snow/lykke.snow.deployment.git
+        run: git clone -v https://${{ secrets.BITBUCKET_USER }}:${{ secrets.BITBUCKET_PASSWORD }}@bitbucket.org/lykke-snow/lykke.snow.deployment.git lykke.snow.deployment
 
       - name: Checkout code
         uses: actions/checkout@v2
