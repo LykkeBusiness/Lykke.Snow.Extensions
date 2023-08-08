@@ -44,8 +44,8 @@ jobs:
           
           source ./lykke.snow.deployment/tools/core/changelog.sh
           FILE=$(echo "$FILES" | head -n 1)
-          replace_tbd_placeholder "$FILE" "${{ env.TAG_NUMBERS }}"
-          if [[ $? -eq 0 ]]; then
+          TBD_REPLACED=$(replace_tbd_placeholder "$FILE" "${{ env.TAG_NUMBERS }}")
+          if [[ $TBD_REPLACED -eq 0 ]]; then
             echo "CHANGELOG.md does not contain a placeholder for the new version. Failing the workflow."
             exit 1
           fi
