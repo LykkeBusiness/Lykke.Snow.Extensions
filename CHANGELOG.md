@@ -1,3 +1,8 @@
+## [[tbd]] - Nova 2. Delivery 17. Hotfix 10 (2023-08-08)
+
+### Added
+* Sourcing csproj version update bash scripts from bitbucket repository
+
 ## 1.0.16 - Nova 2. Delivery 17. Hotfix 9 (2023-08-08)
 
 ### Fixed

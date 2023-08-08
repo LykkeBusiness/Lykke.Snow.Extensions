@@ -57,9 +57,14 @@ jobs:
             echo "No .csproj files found. Failing the workflow."
             exit 1
           fi
+
+          source ./lykke.snow.deployment/tools/core/csproj.sh
           for FILE in $FILES; do
-            echo "Updating version in $FILE to ${{ env.TAG_NUMBERS }}"
-            sed -i "s/<Version>.*<\/Version>/<Version>${{ env.TAG_NUMBERS }}<\/Version>/g" "$FILE"
+            VERSION_UPDATED=$(update_csproj_version "$FILE" "${{ env.TAG_NUMBERS }}")
+            if [[ $VERSION_UPDATED -eq 0 ]]; then
+              echo "Failed to update version in $FILE. Failing the workflow."
+              exit 1
+            fi
           done
           
       - name: Commit and retag
