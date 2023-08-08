@@ -1,3 +1,8 @@
+## [[tbd]] - Nova 2. Delivery 17. Hotfix 8 (2023-08-08)
+
+### Fixed
+* Use manually entered tag value for release
+
 ## 1.0.14 - Nova 2. Delivery 17. Hotfix 8 (2023-08-08)
 
 ### Changed

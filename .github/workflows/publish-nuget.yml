@@ -107,7 +107,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github.event.inputs.version }}
           release_name: ${{ env.DELIVERY_NAME }}
           body_path: ${{ env.DELIVERY_NOTES_FILE }}
           draft: false
