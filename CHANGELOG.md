@@ -1,4 +1,4 @@
-## [[tbd]] - Nova 2. Delivery 17. Hotfix 8 (2023-08-08)
+## 1.0.14 - Nova 2. Delivery 17. Hotfix 8 (2023-08-08)
 
 ### Changed
 * Switch to manual nuget publication workflow start
