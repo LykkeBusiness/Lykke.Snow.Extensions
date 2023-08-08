@@ -1,4 +1,4 @@
-## [[tbd]] - Nova 2. Delivery 17. Hotfix 9 (2023-08-08)
+## 1.0.16 - Nova 2. Delivery 17. Hotfix 9 (2023-08-08)
 
 ### Fixed
 * Sourcing changelog bash scripts from bitbucket repository
