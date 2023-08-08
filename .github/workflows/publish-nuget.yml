@@ -10,11 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout deployment code
+        run: git clone https://${{ secrets.BITBUCKET_USER }}:${{ secrets.BITBUCKET_PASSWORD }}@bitbucket.org/lykke-snow/lykke.snow.deployment.git
+
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           ref: master
 
+      - name: Print Directory Structure
+        run: tree
+      
       - name: Check for CHANGELOG.md and replace [[TBD]] or [[tbd]]
         run: |
           TAG_VERSION=${GITHUB_REF/refs\/tags\/v/} # Removing "v" prefix
