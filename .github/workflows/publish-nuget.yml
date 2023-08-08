@@ -67,6 +67,7 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git add -A
+          git reset -- lykke.snow.deployment
           git commit -m "Version ${{ env.TAG_NUMBERS }}"
           git tag -fa ${{ github.event.inputs.version }} -m "${{ github.event.inputs.version }}"
           git push origin --tags --force
