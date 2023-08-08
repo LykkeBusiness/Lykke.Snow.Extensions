@@ -1,4 +1,4 @@
-## [[tbd]] - Nova 2. Delivery 17. Hotfix 4 (2023-08-08)
+## 1.0.10 - Nova 2. Delivery 17. Hotfix 4 (2023-08-08)
 
 ### Added
 * Add deployment tools to be used in GitHub Actions
