@@ -1,4 +1,4 @@
-## [[tbd]] - Nova 2. Delivery 17. Hotfix 11 (2023-08-08)
+## 1.0.18 - Nova 2. Delivery 17. Hotfix 11 (2023-08-08)
 
 ### Changed
 * Minor improvements
