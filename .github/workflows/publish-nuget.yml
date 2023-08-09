@@ -17,6 +17,9 @@ on:
         description: 'Update CHANGELOG.md'
         required: true
         default: 'true'
+      release_name:
+        description: 'Release name (e.g. "Nova 2. Delivery X. Hotfix Y"). If empty, will be extracted from CHANGELOG.md'
+        required: false
 
 jobs:
   build:
@@ -114,8 +117,8 @@ jobs:
       - name: Push
         run: dotnet nuget push out/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate
         
-      # Extracts delivery name and release notes from CHANGELOG.md
-      - name: Extract delivery name and release notes
+      # Extracts release name and release notes from CHANGELOG.md
+      - name: Extract release name and release notes
         if: ${{ github.event.inputs.create_release == 'true' }}
         run: |
           CHANGELOG_FILE=$(find . -type f -name 'CHANGELOG.md')
@@ -124,14 +127,28 @@ jobs:
             exit 1
           fi
 
-          DELIVERY_NAME=$(sed -n 's/^## [0-9.]* - \(.*\) ([0-9-]*)$/\1/p' "$CHANGELOG_FILE" | head -n 1)
-          DELIVERY_NOTES=$(awk '/^## / { if (found) exit; if (!found) found=1; next } found && NF > 0 { print }' $CHANGELOG_FILE)
+          RELEASE_NAME = ${{ github.event.inputs.release_name }}
+          if [[ -z "$RELEASE_NAME" ]]; then
+            echo "Release name not provided. Extracting from CHANGELOG.md"
+            RELEASE_NAME=$(sed -n 's/^## [0-9.]* - \(.*\) ([0-9-]*)$/\1/p' "$CHANGELOG_FILE" | head -n 1)
+          fi
 
-          echo "DELIVERY_NAME=$DELIVERY_NAME" >> $GITHUB_ENV
-          echo "$DELIVERY_NOTES" > delivery_notes.txt
-          echo "DELIVERY_NOTES_FILE=delivery_notes.txt" >> $GITHUB_ENV
+          if [[ -z "$RELEASE_NAME" ]]; then
+            echo "Failed to extract release name from CHANGELOG.md. Failing the workflow."
+            exit 1
+          fi
 
-      # Creates a GitHub release with the delivery name and release notes from CHANGELOG.md
+          RELEASE_NOTES=$(awk '/^## / { if (found) exit; if (!found) found=1; next } found && NF > 0 { print }' $CHANGELOG_FILE)
+          if [[ -z "$RELEASE_NOTES" ]]; then
+            echo "Failed to extract release notes from CHANGELOG.md. Failing the workflow."
+            exit 1
+          fi
+
+          echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_ENV
+          echo "$RELEASE_NOTES" > release_notes.txt
+          echo "RELEASE_NOTES_FILE=release_notes.txt" >> $GITHUB_ENV
+
+      # Creates a GitHub release with the release name and release notes from CHANGELOG.md
       - name: Create GitHub Release
         if: ${{ github.event.inputs.create_release == 'true' }}
         uses: actions/create-release@v1
@@ -139,11 +156,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.event.inputs.version }}
-          release_name: ${{ env.DELIVERY_NAME }}
-          body_path: ${{ env.DELIVERY_NOTES_FILE }}
+          release_name: ${{ env.RELEASE_NAME }}
+          body_path: ${{ env.RELEASE_NOTES_FILE }}
           draft: false
           prerelease: false
           
       - name: Clean up temporary files
-        run: rm -f ${{ env.DELIVERY_NOTES_FILE }}
-        
+        run: rm -f ${{ env.RELEASE_NOTES_FILE }}
