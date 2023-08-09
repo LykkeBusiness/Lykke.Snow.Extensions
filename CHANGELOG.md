@@ -1,4 +1,4 @@
-## [[tbd]] (2023-08-09)
+## 1.0.24 (2023-08-09)
 
 ### Changed
 * Update nuget publication workflow template
