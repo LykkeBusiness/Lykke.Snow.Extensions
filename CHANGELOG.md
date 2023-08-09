@@ -1,19 +1,24 @@
-## 1.0.21 - Nova 2. Delivery 17. Hotfix 14 (2023-08-08)
+## 1.0.22 - Nova 2. Delivery 17. Hotfix 15 (2023-08-09)
 
 ### Changed
 * Update nuget publication workflow template
 
-## 1.0.20 - Nova 2. Delivery 17. Hotfix 13 (2023-08-08)
+## 1.0.21 - Nova 2. Delivery 17. Hotfix 14 (2023-08-09)
 
 ### Changed
 * Update nuget publication workflow template
 
-## 1.0.19 - Nova 2. Delivery 17. Hotfix 12 (2023-08-08)
+## 1.0.20 - Nova 2. Delivery 17. Hotfix 13 (2023-08-09)
+
+### Changed
+* Update nuget publication workflow template
+
+## 1.0.19 - Nova 2. Delivery 17. Hotfix 12 (2023-08-09)
 
 ### Changed
 * Enhancing nuget publication workflow
 
-## 1.0.18 - Nova 2. Delivery 17. Hotfix 11 (2023-08-08)
+## 1.0.18 - Nova 2. Delivery 17. Hotfix 11 (2023-08-09)
 
 ### Changed
 * Minor improvements

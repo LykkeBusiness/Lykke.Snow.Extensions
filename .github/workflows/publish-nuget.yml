@@ -127,7 +127,7 @@ jobs:
             exit 1
           fi
 
-          RELEASE_NAME=${{ github.event.inputs.release_name }}
+          RELEASE_NAME="${{ github.event.inputs.release_name }}"
           if [[ -z "$RELEASE_NAME" ]]; then
             echo "Release name not provided. Extracting from CHANGELOG.md"
             RELEASE_NAME=$(sed -n 's/^## [0-9.]* - \(.*\) ([0-9-]*)$/\1/p' "$CHANGELOG_FILE" | head -n 1)
