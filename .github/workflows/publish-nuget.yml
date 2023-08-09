@@ -1,4 +1,6 @@
 name: Publish NuGet Package
+# This workflow is agreed on and requirements are documented 
+# in https://bit.ly/4529Q9Q.
 
 on:
   workflow_dispatch:
@@ -7,6 +9,14 @@ on:
         description: 'Version number (e.g. v1.0.0)'
         required: true
         default: 'v1.0.0'
+      create_release:
+        description: 'Create a GitHub release'
+        required: true
+        default: 'true'
+      update_changelog:
+        description: 'Update CHANGELOG.md'
+        required: true
+        default: 'true'
 
 jobs:
   build:
@@ -18,17 +28,21 @@ jobs:
         with:
           ref: master
 
+      # Checking out deployment tools repository from Bitbucket
       - name: Checkout deployment tools
         run: |
           git clone -v https://${{ secrets.BITBUCKET_USER }}:${{ secrets.BITBUCKET_PASSWORD }}@bitbucket.org/lykke-snow/lykke.snow.deployment.git lykke.snow.deployment
 
+      # Parses the version number, removes prefix and stores it in TAG_NUMBERS for later use
       - name: Parse version number
         run: |
           TAG_VERSION=${{ github.event.inputs.version }}
           TAG_NUMBERS=${TAG_VERSION#v} # Remove preceding "v" if present
           echo "TAG_NUMBERS=$TAG_NUMBERS" >> $GITHUB_ENV
 
+      # Injects the new version into CHANGELOG.md by replacing placeholder
       - name: Inject new version into changelog file
+        if: ${{ github.event.inputs.update_changelog == 'true' }}
         run: |
           FILES=$(find . -type f -name 'CHANGELOG.md')
           if [[ -z "$FILES" ]]; then
@@ -50,6 +64,7 @@ jobs:
             exit 1
           fi
       
+      # Updates all .csproj files with the new version
       - name: Update .csproj files with new version
         run: |
           FILES=$(find . -type f -name '*.csproj')
@@ -67,6 +82,7 @@ jobs:
             fi
           done
           
+      # Tags the current commit with the new version
       - name: Tag version
         run: |
           git config --global user.name 'GitHub Actions'
@@ -75,7 +91,7 @@ jobs:
           git reset -- lykke.snow.deployment
           git commit -m "Version ${{ env.TAG_NUMBERS }}"
           git tag -fa ${{ github.event.inputs.version }} -m "${{ github.event.inputs.version }}"
-          git push origin --tags --force
+          git push origin --tags
           git push origin master
       
       - name: Setup .NET Core
@@ -98,9 +114,15 @@ jobs:
       - name: Push
         run: dotnet nuget push out/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json --skip-duplicate
         
+      # Extracts delivery name and release notes from CHANGELOG.md
       - name: Extract delivery name and release notes
+        if: ${{ github.event.inputs.create_release == 'true' }}
         run: |
           CHANGELOG_FILE=$(find . -type f -name 'CHANGELOG.md')
+          if [[ -z "$CHANGELOG_FILE" ]]; then
+            echo "CHANGELOG.md not found. Failing the workflow."
+            exit 1
+          fi
 
           DELIVERY_NAME=$(sed -n 's/^## [0-9.]* - \(.*\) ([0-9-]*)$/\1/p' "$CHANGELOG_FILE" | head -n 1)
           DELIVERY_NOTES=$(awk '/^## / { if (found) exit; if (!found) found=1; next } found && NF > 0 { print }' $CHANGELOG_FILE)
@@ -109,7 +131,9 @@ jobs:
           echo "$DELIVERY_NOTES" > delivery_notes.txt
           echo "DELIVERY_NOTES_FILE=delivery_notes.txt" >> $GITHUB_ENV
 
+      # Creates a GitHub release with the delivery name and release notes from CHANGELOG.md
       - name: Create GitHub Release
+        if: ${{ github.event.inputs.create_release == 'true' }}
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -122,3 +146,4 @@ jobs:
           
       - name: Clean up temporary files
         run: rm -f ${{ env.DELIVERY_NOTES_FILE }}
+        
