@@ -130,7 +130,15 @@ jobs:
           RELEASE_NAME="${{ github.event.inputs.release_name }}"
           if [[ -z "$RELEASE_NAME" ]]; then
             echo "Release name not provided. Extracting from CHANGELOG.md"
-            RELEASE_NAME=$(sed -n 's/^## [0-9.]* - \(.*\) ([0-9-]*)$/\1/p' "$CHANGELOG_FILE" | head -n 1)
+            # Extract the latest title
+            LATEST_TITLE=$(grep -E '^## [0-9.]+' "$CHANGELOG_FILE" | head -n 1)
+            # Check if the latest title matches the expected pattern
+            if [[ ! "$LATEST_TITLE" =~ ^##\ [0-9.]+(\ -\ (.*))?\ \([0-9-]*\)$ ]]; then
+              echo "Error: Latest title in $CHANGELOG_FILE does not follow the expected pattern"
+              exit 1
+            fi
+            # Extract the release name from the latest title, if present
+            RELEASE_NAME=${BASH_REMATCH[2]}
           fi
 
           if [[ -z "$RELEASE_NAME" ]]; then
