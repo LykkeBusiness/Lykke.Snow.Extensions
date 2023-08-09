@@ -1,4 +1,4 @@
-## [[tbd]] - Nova 2. Delivery 17. Hotfix 12 (2023-08-08)
+## 1.0.19 - Nova 2. Delivery 17. Hotfix 12 (2023-08-08)
 
 ### Changed
 * Enhancing nuget publication workflow
