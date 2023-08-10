@@ -1,5 +1,5 @@
 
-## [[tbd]] (2023-08-11)
+## 1.0.30 (2023-08-11)
 
 ## Changed
 * Update worflow template
