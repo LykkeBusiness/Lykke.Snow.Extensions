@@ -1,3 +1,8 @@
+## [[tbd]] - .NET 8 migration (2024-08-12)
+
+### Changed
+* .NET 8 migration
+
 ## 2.0.0 (2024-08-09)
 
 ### Changed
